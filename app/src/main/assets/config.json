@@ -1,0 +1,19 @@
+{
+  "notice": "首次使用请编辑 config.json，将 your-domain.com 替换为你的苹果 CMS 域名后重新编译安装。",
+  "sites": [
+    {
+      "key": "maccms",
+      "name": "苹果CMS",
+      "type": 1,
+      "api": "https://your-domain.com/api.php/provide/vod/at/json/",
+      "searchable": 1,
+      "changeable": 1,
+      "quickSearch": 1,
+      "timeout": 15,
+      "style": {
+        "type": "rect",
+        "ratio": 0.75
+      }
+    }
+  ]
+}
