@@ -2,33 +2,47 @@ name: Build Android APK
 
 on:
   push:
-    branches: [ main ]
+    branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
 
-      - uses: subosito/flutter-action@v2
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
 
-      - name: Build APK
+      - name: Locate project, create android files and build
         run: |
-          # 如果 pubspec.yaml 在根目录，直接构建；如果在深层，自动切换
-          if [ -f "pubspec.yaml" ]; then
-            flutter pub get
-            flutter build apk --release
-          else
-            TARGET_DIR=$(find . -name "pubspec.yaml" -exec dirname {} \; | head -n 1)
-            cd "$TARGET_DIR"
-            flutter pub get
-            flutter build apk --release
+          # 自动定位包含 pubspec.yaml 的目录
+          PUBSPEC_FILE=$(find . -maxdepth 3 -name "pubspec.yaml" -print -quit)
+          PROJECT_DIR=$(dirname "$PUBSPEC_FILE")
+          cd "$PROJECT_DIR"
+          
+          # 获取依赖
+          flutter pub get
+          
+          # 关键补充：如果缺少 android 文件夹，自动补充生成 Android 原生文件
+          if [ ! -d "android" ]; then
+            flutter create --platforms=android .
           fi
+          
+          # 构建 release 版 APK
+          flutter build apk --release
 
-      - name: Upload APK
+      - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-release
