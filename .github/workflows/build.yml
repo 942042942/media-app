@@ -15,13 +15,18 @@ jobs:
         with:
           channel: 'stable'
 
-      - name: Locate project and build
+      - name: Build APK
         run: |
-          PROJECT_DIR=$(dirname $(find . -maxdepth 3 -name "pubspec.yaml" -print -quit))
-          echo "Found project directory: $PROJECT_DIR"
-          cd "$PROJECT_DIR"
-          flutter pub get
-          flutter build apk --release
+          # 如果 pubspec.yaml 在根目录，直接构建；如果在深层，自动切换
+          if [ -f "pubspec.yaml" ]; then
+            flutter pub get
+            flutter build apk --release
+          else
+            TARGET_DIR=$(find . -name "pubspec.yaml" -exec dirname {} \; | head -n 1)
+            cd "$TARGET_DIR"
+            flutter pub get
+            flutter build apk --release
+          fi
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
