@@ -201,7 +201,7 @@ class HomePage extends StatelessWidget {
         body: SafeArea(
           child: CustomScrollView(
             slivers: [
-              const SliverToBoxAdapter(
+              SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
                   child: Container(
