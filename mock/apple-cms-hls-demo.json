@@ -1,0 +1,46 @@
+{
+  "code": 1,
+  "msg": "success",
+  "page": 1,
+  "pagecount": 1,
+  "limit": 20,
+  "total": 3,
+  "list": [
+    {
+      "vod_id": 2001,
+      "vod_name": "HLS 多码率测试",
+      "type_name": "测试",
+      "vod_remarks": "m3u8",
+      "vod_year": "2026",
+      "vod_area": "Demo",
+      "vod_pic": "",
+      "vod_content": "用于验证 ArtPlayer 与 hls.js 的 HLS 播放能力。",
+      "vod_play_from": "hls",
+      "vod_play_url": "线路1$https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
+    },
+    {
+      "vod_id": 2002,
+      "vod_name": "Sintel HLS 测试",
+      "type_name": "测试",
+      "vod_remarks": "m3u8",
+      "vod_year": "2026",
+      "vod_area": "Demo",
+      "vod_pic": "https://download.blender.org/durian/poster/sintel_poster.jpg",
+      "vod_content": "用于验证跨域 HLS 播放。",
+      "vod_play_from": "hls",
+      "vod_play_url": "线路1$https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8"
+    },
+    {
+      "vod_id": 2003,
+      "vod_name": "MP4 直连测试",
+      "type_name": "测试",
+      "vod_remarks": "mp4",
+      "vod_year": "2026",
+      "vod_area": "Demo",
+      "vod_pic": "",
+      "vod_content": "用于验证原生 MP4 播放。",
+      "vod_play_from": "mp4",
+      "vod_play_url": "正片$https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+    }
+  ]
+}

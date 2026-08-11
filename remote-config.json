@@ -1,0 +1,28 @@
+{
+  "advertisement": {
+    "title": "星云影视远程配置",
+    "description": "此配置来自 GitHub Raw。以后只改 remote-config.json 并推送即可在线更新。",
+    "link": "https://github.com/942042942/media-app"
+  },
+  "remoteConfigUrl": "https://raw.githubusercontent.com/942042942/media-app/main/remote-config.json",
+  "corsProxyUrls": [
+    "https://api.allorigins.win/raw?url={url}"
+  ],
+  "apiSources": [
+    {
+      "name": "公开视频演示源",
+      "baseUrl": "https://raw.githubusercontent.com/942042942/media-app/main/mock/apple-cms-public-domain.json",
+      "enabled": true,
+      "type": "json"
+    },
+    {
+      "name": "HLS 播放测试源",
+      "baseUrl": "https://raw.githubusercontent.com/942042942/media-app/main/mock/apple-cms-hls-demo.json",
+      "enabled": true,
+      "type": "json"
+    }
+  ],
+  "videoApiUrl": "",
+  "announcement": "远程配置已生效：修改 GitHub 仓库中的 remote-config.json 后，App 下次启动或刷新即可获取新配置。",
+  "categories": ["电影", "剧集", "综艺", "动漫", "纪录片", "测试"]
+}

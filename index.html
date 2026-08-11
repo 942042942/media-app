@@ -1,0 +1,1267 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#111827">
+  <title>星云影视</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f7fb;
+      --panel: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+      --line: #e5e7eb;
+      --brand: #e11d48;
+      --brand-2: #0891b2;
+      --shadow: 0 10px 30px rgba(17, 24, 39, .08);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .app {
+      width: min(100%, 980px);
+      margin: 0 auto;
+      padding: env(safe-area-inset-top) 14px calc(78px + env(safe-area-inset-bottom));
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      margin: 0 -14px;
+      padding: 12px 14px 10px;
+      background: rgba(246, 247, 251, .92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(229, 231, 235, .75);
+    }
+
+    .brand-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .brand-name {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.2;
+      font-weight: 800;
+    }
+
+    .brand-mark {
+      padding: 4px 8px;
+      border-radius: 8px;
+      background: #111827;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .brand-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .refresh-button {
+      width: 32px;
+      height: 32px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      background: var(--panel);
+      color: var(--muted);
+    }
+
+    .refresh-button.loading svg {
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .search {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      height: 46px;
+      padding: 0 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: 0 6px 18px rgba(17, 24, 39, .05);
+    }
+
+    .search svg {
+      flex: 0 0 auto;
+      color: var(--muted);
+    }
+
+    .search input {
+      width: 100%;
+      border: 0;
+      outline: 0;
+      font-size: 15px;
+      background: transparent;
+      color: var(--text);
+    }
+
+    .banner {
+      display: block;
+      margin: 14px 0 12px;
+      min-height: 108px;
+      overflow: hidden;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #111827 0%, #0f766e 100%);
+      color: #fff;
+      text-decoration: none;
+      box-shadow: var(--shadow);
+    }
+
+    .banner-inner {
+      min-height: 108px;
+      padding: 18px;
+      display: grid;
+      align-content: center;
+      gap: 8px;
+      background-image:
+        radial-gradient(circle at 88% 18%, rgba(255,255,255,.22), transparent 24%),
+        linear-gradient(90deg, rgba(0,0,0,.18), transparent);
+    }
+
+    .banner-title {
+      font-size: 20px;
+      font-weight: 750;
+      line-height: 1.2;
+    }
+
+    .banner-desc {
+      width: min(100%, 560px);
+      font-size: 13px;
+      line-height: 1.45;
+      opacity: .88;
+    }
+
+    .notice {
+      margin: 0 0 12px;
+      padding: 10px 12px;
+      border: 1px solid #bae6fd;
+      border-radius: 8px;
+      background: #ecfeff;
+      color: #155e75;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .status {
+      display: none;
+      margin: 0 0 12px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .status.show {
+      display: block;
+    }
+
+    .status.error {
+      border-color: #fecaca;
+      background: #fff1f2;
+      color: #be123c;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin: 0 -14px 14px;
+      padding: 0 14px 2px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tab {
+      flex: 0 0 auto;
+      min-width: 58px;
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 650;
+    }
+
+    .tab.active {
+      border-color: var(--brand);
+      background: var(--brand);
+      color: #fff;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 8px 0 12px;
+    }
+
+    .section-head h1 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.2;
+    }
+
+    .source {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      text-align: right;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .card {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: 0 8px 20px rgba(17, 24, 39, .05);
+    }
+
+    .poster {
+      position: relative;
+      aspect-ratio: 3 / 4;
+      background:
+        linear-gradient(160deg, rgba(225,29,72,.84), rgba(8,145,178,.88)),
+        #111827;
+    }
+
+    .poster img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    .badge {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      max-width: calc(100% - 16px);
+      padding: 4px 7px;
+      border-radius: 6px;
+      background: rgba(17, 24, 39, .76);
+      color: #fff;
+      font-size: 11px;
+      line-height: 1.1;
+    }
+
+    .card-body {
+      padding: 10px;
+    }
+
+    .title {
+      margin: 0 0 6px;
+      font-size: 15px;
+      font-weight: 750;
+      line-height: 1.25;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .meta {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+      min-height: 32px;
+    }
+
+    .empty {
+      grid-column: 1 / -1;
+      padding: 32px 12px;
+      border: 1px dashed #cbd5e1;
+      border-radius: 8px;
+      color: var(--muted);
+      text-align: center;
+      background: rgba(255, 255, 255, .58);
+    }
+
+    .card {
+      cursor: pointer;
+    }
+
+    .player-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 40;
+      display: none;
+      background: rgba(17, 24, 39, .72);
+    }
+
+    .player-modal.open {
+      display: grid;
+      align-items: end;
+    }
+
+    .player-panel {
+      width: min(100%, 980px);
+      max-height: min(88vh, 760px);
+      margin: 0 auto;
+      overflow: hidden;
+      border-radius: 8px 8px 0 0;
+      background: #0b1220;
+      color: #fff;
+      box-shadow: 0 -18px 55px rgba(0, 0, 0, .35);
+    }
+
+    .player-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, .1);
+    }
+
+    .player-title {
+      min-width: 0;
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.35;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .icon-button {
+      width: 34px;
+      height: 34px;
+      border: 0;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      background: rgba(255, 255, 255, .1);
+      color: #fff;
+    }
+
+    .player-box {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #000;
+    }
+
+    .player-box video,
+    .player-box .artplayer-app {
+      width: 100%;
+      height: 100%;
+    }
+
+    .episodes {
+      display: flex;
+      gap: 8px;
+      padding: 12px 14px 14px;
+      overflow-x: auto;
+      background: #0b1220;
+    }
+
+    .episode {
+      flex: 0 0 auto;
+      height: 34px;
+      padding: 0 12px;
+      border: 1px solid rgba(255, 255, 255, .15);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, .06);
+      color: #d1d5db;
+    }
+
+    .episode.active {
+      border-color: var(--brand);
+      background: var(--brand);
+      color: #fff;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 20;
+      padding: 8px max(10px, env(safe-area-inset-left)) calc(8px + env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-right));
+      border-top: 1px solid rgba(229, 231, 235, .85);
+      background: rgba(255, 255, 255, .94);
+      backdrop-filter: blur(18px);
+    }
+
+    .bottom-nav-inner {
+      width: min(100%, 980px);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
+    }
+
+    .nav-item {
+      height: 48px;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--muted);
+      display: grid;
+      place-items: center;
+      align-content: center;
+      gap: 3px;
+      font-size: 11px;
+    }
+
+    .nav-item.active {
+      color: var(--brand);
+      background: #fff1f2;
+    }
+
+    .nav-item svg {
+      width: 19px;
+      height: 19px;
+    }
+
+    @media (min-width: 720px) {
+      .app {
+        padding-inline: 22px;
+      }
+
+      .topbar,
+      .tabs {
+        margin-inline: -22px;
+        padding-inline: 22px;
+      }
+
+      .grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .banner,
+      .notice,
+      .card,
+      .tab,
+      .search,
+      .nav-item {
+        border-radius: 8px;
+      }
+
+      .player-modal.open {
+        align-items: center;
+        padding: 24px;
+      }
+
+      .player-panel {
+        border-radius: 8px;
+      }
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.13/dist/hls.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/artplayer@5.1.6/dist/artplayer.js"></script>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div class="brand-row">
+        <h1 class="brand-name">星云影视</h1>
+        <div class="brand-actions">
+          <button id="refreshConfig" class="refresh-button" type="button" aria-label="刷新远程配置">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66M20 4v5h-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <span class="brand-mark">HD</span>
+        </div>
+      </div>
+      <label class="search" aria-label="搜索星云影视资源">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">
+          <path d="m21 21-4.35-4.35m1.35-5.15a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <input id="searchInput" type="search" placeholder="搜索电影、剧集、综艺" autocomplete="off">
+      </label>
+    </header>
+
+    <a id="banner" class="banner" href="#" target="_blank" rel="noopener">
+      <div class="banner-inner">
+        <div id="bannerTitle" class="banner-title">广告 Banner</div>
+        <div id="bannerDesc" class="banner-desc">在 config.json 中替换标题、描述和跳转链接。</div>
+      </div>
+    </a>
+
+    <section id="notice" class="notice">公告加载中...</section>
+    <section id="statusMessage" class="status show">正在加载配置...</section>
+
+    <nav id="tabs" class="tabs" aria-label="视频分类"></nav>
+
+    <div class="section-head">
+      <h1 id="sectionTitle">热门推荐</h1>
+      <p id="sourceInfo" class="source">读取配置中...</p>
+    </div>
+
+    <section id="videoGrid" class="grid" aria-live="polite"></section>
+  </main>
+
+  <nav class="bottom-nav" aria-label="底部导航">
+    <div class="bottom-nav-inner">
+      <button class="nav-item active" type="button" aria-label="首页">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3V10.5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+        首页
+      </button>
+      <button class="nav-item" type="button" aria-label="分类">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 4h7v7H4V4Zm9 0h7v7h-7V4ZM4 13h7v7H4v-7Zm9 0h7v7h-7v-7Z" stroke="currentColor" stroke-width="2"/></svg>
+        分类
+      </button>
+      <button class="nav-item" type="button" aria-label="收藏">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m12 20-7.1-7.1a4.2 4.2 0 0 1 5.94-5.94L12 8.12l1.16-1.16a4.2 4.2 0 0 1 5.94 5.94L12 20Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+        收藏
+      </button>
+      <button class="nav-item" type="button" aria-label="我的">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 21a8 8 0 0 0-16 0m12-13a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        我的
+      </button>
+    </div>
+  </nav>
+
+  <section id="playerModal" class="player-modal" aria-hidden="true">
+    <div class="player-panel" role="dialog" aria-modal="true" aria-labelledby="playerTitle">
+      <div class="player-head">
+        <h2 id="playerTitle" class="player-title">正在播放</h2>
+        <button id="closePlayer" class="icon-button" type="button" aria-label="关闭播放器">
+          <svg viewBox="0 0 24 24" width="19" height="19" fill="none" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div id="playerBox" class="player-box"></div>
+      <div id="episodes" class="episodes"></div>
+    </div>
+  </section>
+
+  <script>
+    const embeddedDefaultConfig = {
+      advertisement: {
+        title: "星云影视",
+        description: "内置默认配置已启用。联网后会自动尝试加载远程配置。",
+        link: "https://github.com/942042942/media-app"
+      },
+      remoteConfigUrl: "https://raw.githubusercontent.com/942042942/media-app/main/remote-config.json",
+      corsProxyUrls: ["https://api.allorigins.win/raw?url={url}"],
+      apiSources: [
+        {
+          name: "内置公开视频演示源",
+          baseUrl: "https://raw.githubusercontent.com/942042942/media-app/main/mock/apple-cms-public-domain.json",
+          enabled: true,
+          type: "json"
+        },
+        {
+          name: "内置 HLS 测试源",
+          baseUrl: "https://raw.githubusercontent.com/942042942/media-app/main/mock/apple-cms-hls-demo.json",
+          enabled: true,
+          type: "json"
+        }
+      ],
+      videoApiUrl: "",
+      announcement: "正在使用内置默认配置；如果远程配置可访问，会自动在线更新。",
+      categories: ["电影", "剧集", "综艺", "动漫", "纪录片", "测试"]
+    };
+
+    const hardcodedConfig = {
+      advertisement: {
+        title: "星云影视",
+        description: "默认广告位",
+        link: "https://github.com/942042942/media-app"
+      },
+      announcement: "默认公告：当前使用内置配置与示例数据。",
+      categories: ["电影", "剧集", "综艺", "动漫", "纪录片", "测试"]
+    };
+
+    const hardcodedVideos = [
+      {
+        title: "星云影院示例片",
+        category: "电影",
+        tag: "高清",
+        year: "2026",
+        area: "内置",
+        poster: "https://peach.blender.org/wp-content/uploads/title_anouncement.jpg?x11217",
+        playFrom: "内置",
+        playUrl: "正片$https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+      },
+      {
+        title: "HLS 播放测试",
+        category: "测试",
+        tag: "m3u8",
+        year: "2026",
+        area: "内置",
+        poster: "https://download.blender.org/durian/poster/sintel_poster.jpg",
+        playFrom: "内置",
+        playUrl: "线路1$https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
+      },
+      {
+        title: "MP4 直连测试",
+        category: "测试",
+        tag: "mp4",
+        year: "2026",
+        area: "内置",
+        poster: "https://mango.blender.org/wp-content/uploads/2013/05/01_thom_celia_bridge.jpg",
+        playFrom: "内置",
+        playUrl: "正片$https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
+      },
+      {
+        title: "公开视频样例",
+        category: "电影",
+        tag: "推荐",
+        year: "2025",
+        area: "内置",
+        poster: "https://orange.blender.org/wp-content/themes/orange/images/common/ed_header.jpg",
+        playFrom: "内置",
+        playUrl: "正片$https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4"
+      },
+      {
+        title: "备用直连测试",
+        category: "纪录片",
+        tag: "备用",
+        year: "2024",
+        area: "内置",
+        poster: "https://download.blender.org/durian/poster/sintel_poster.jpg",
+        playFrom: "内置",
+        playUrl: "正片$https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4"
+      },
+      {
+        title: "蓝海影院",
+        category: "剧集",
+        tag: "热播",
+        year: "2026",
+        area: "内置",
+        poster: "https://peach.blender.org/wp-content/uploads/bbb-splash.png",
+        playFrom: "内置",
+        playUrl: "正片$https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4"
+      },
+      {
+        title: "城市夜航",
+        category: "综艺",
+        tag: "更新",
+        year: "2025",
+        area: "内置",
+        poster: "https://download.blender.org/peach/bigbuckbunny_movies/BigBuckBunny.jpg",
+        playFrom: "内置",
+        playUrl: "正片$https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+      }
+    ];
+
+    const fallbackPlaybackUrl = "https://assets.mixkit.co/videos/preview/mixkit-a-girl-blowing-a-bubble-gum-bubble-11881-large.mp4";
+
+    const state = {
+      config: null,
+      videos: hardcodedVideos,
+      activeCategory: "全部",
+      query: "",
+      source: null,
+      player: null,
+      currentVideo: null,
+      currentEpisode: null,
+      searchTimer: null,
+      localConfig: null,
+      remoteConfigUrl: "",
+      touchStartY: 0,
+      isRefreshing: false,
+      corsProxyUrls: [],
+      playerError: null,
+      playerLoading: false
+    };
+
+    const els = {
+      banner: document.querySelector("#banner"),
+      bannerTitle: document.querySelector("#bannerTitle"),
+      bannerDesc: document.querySelector("#bannerDesc"),
+      notice: document.querySelector("#notice"),
+      tabs: document.querySelector("#tabs"),
+      grid: document.querySelector("#videoGrid"),
+      sectionTitle: document.querySelector("#sectionTitle"),
+      sourceInfo: document.querySelector("#sourceInfo"),
+      search: document.querySelector("#searchInput"),
+      modal: document.querySelector("#playerModal"),
+      closePlayer: document.querySelector("#closePlayer"),
+      playerBox: document.querySelector("#playerBox"),
+      playerTitle: document.querySelector("#playerTitle"),
+      episodes: document.querySelector("#episodes"),
+      refreshConfig: document.querySelector("#refreshConfig"),
+      status: document.querySelector("#statusMessage")
+    };
+
+    function setStatus(message = "", isError = false) {
+      els.status.textContent = message;
+      els.status.classList.toggle("show", Boolean(message));
+      els.status.classList.toggle("error", isError);
+    }
+
+    function setNotice(config) {
+      const ad = config?.advertisement || {};
+      const adTitle = String(ad.title || "").trim();
+      const adDesc = String(ad.description || "").trim();
+      const adLink = String(ad.link || "").trim();
+      if (adTitle || adDesc || adLink) {
+        els.banner.hidden = false;
+        els.banner.href = adLink || "#";
+        els.bannerTitle.textContent = adTitle || hardcodedConfig.advertisement.title;
+        els.bannerDesc.textContent = adDesc || hardcodedConfig.advertisement.description;
+      } else {
+        els.banner.hidden = true;
+      }
+
+      const announcement = String(config?.announcement || "").trim();
+      if (announcement) {
+        els.notice.hidden = false;
+        els.notice.textContent = announcement;
+      } else {
+        els.notice.hidden = true;
+      }
+    }
+
+    function forceHardcodedVideos(reason) {
+      console.warn("Using hardcoded mock videos:", reason);
+      state.videos = hardcodedVideos;
+      state.source = null;
+      els.sourceInfo.textContent = "已切换到硬编码示例数据";
+      setStatus("已强制使用内置硬编码示例数据", true);
+      try {
+        renderTabs();
+        renderVideos();
+      } catch (error) {
+        console.error(`HOMEPAGE ERROR: ${error}\n${error.stack || ""}`);
+      }
+      return hardcodedVideos;
+    }
+
+    function showPlayerLoading(message = "正在加载播放器...") {
+      els.playerBox.innerHTML = `<div class="empty" style="grid-column:1/-1;background:#111827;color:#fff;border-color:rgba(255,255,255,.15)">${escapeHtml(message)}</div>`;
+      state.playerLoading = true;
+      state.playerError = null;
+    }
+
+    function showPlayerError(message, retryHandler) {
+      state.playerLoading = false;
+      state.playerError = message;
+      els.playerBox.innerHTML = `
+        <div class="empty" style="grid-column:1/-1;background:#111827;color:#fff;border-color:rgba(255,255,255,.15)">
+          <div style="margin-bottom:12px">${escapeHtml(message)}</div>
+          <button id="playerRetryButton" class="episode active" type="button">重试</button>
+        </div>
+      `;
+      const retryButton = document.querySelector("#playerRetryButton");
+      retryButton?.addEventListener("click", () => {
+        if (typeof retryHandler === "function") retryHandler();
+      });
+    }
+
+    function resolvePlayableUrl(video) {
+      const groups = String(video?.playUrl || "").split("$$$");
+      for (const group of groups) {
+        const firstEntry = group.split("#").find(Boolean) || "";
+        const parts = firstEntry.split("$");
+        const url = parts.slice(1).join("$").trim();
+        if (url) return url;
+      }
+      return fallbackPlaybackUrl;
+    }
+
+    function proxiedUrl(url, proxyPattern) {
+      return proxyPattern.replace("{url}", encodeURIComponent(url));
+    }
+
+    async function loadJson(url, { allowProxy = false } = {}) {
+      const targets = [url];
+      if (allowProxy) {
+        state.corsProxyUrls.forEach((proxy) => targets.push(proxiedUrl(url, proxy)));
+      }
+      let lastError;
+      for (const target of targets) {
+        let timer;
+        try {
+          const controller = new AbortController();
+          timer = setTimeout(() => controller.abort(), 3000);
+          const response = await fetch(target, { cache: "no-store", mode: "cors", signal: controller.signal });
+          if (!response.ok) throw new Error(`请求失败: ${response.status}`);
+          return response.json();
+        } catch (error) {
+          lastError = error;
+          console.warn(error);
+        } finally {
+          clearTimeout(timer);
+        }
+      }
+      throw lastError || new Error("请求失败");
+    }
+
+    async function tryLoadLocalConfig() {
+      try {
+        return await loadJson("config.json");
+      } catch (error) {
+        console.warn(error);
+        return hardcodedConfig;
+      }
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      })[char]);
+    }
+
+    function getEnabledSources(config) {
+      const sources = (config.apiSources || [])
+        .filter((source) => source.enabled !== false && source.baseUrl)
+        .map((source) => ({
+          name: source.name || "苹果 CMS 源",
+          baseUrl: source.baseUrl,
+          type: source.type || ""
+        }));
+      if (config.videoApiUrl) {
+        sources.push({ name: "兼容旧配置源", baseUrl: config.videoApiUrl, type: "apple-cms" });
+      }
+      return sources;
+    }
+
+    function buildAppleCmsUrl(source, params = {}) {
+      const url = new URL(source.baseUrl, window.location.href);
+      if (source.type === "json" || url.pathname.endsWith(".json")) return url.toString();
+      url.searchParams.set("ac", "detail");
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== "") url.searchParams.set(key, value);
+      });
+      return url.toString();
+    }
+
+    function normalizeVideos(payload) {
+      const raw = Array.isArray(payload) ? payload : payload?.list || payload?.data || payload?.videos || [];
+      return raw.map((item) => ({
+        id: item.id || item.vod_id || item.video_id || "",
+        title: item.title || item.name || item.vod_name || "未命名资源",
+        category: item.category || item.type || item.type_name || "其他",
+        tag: item.tag || item.remark || item.vod_remarks || "可播放",
+        year: item.year || item.vod_year || "",
+        area: item.area || item.vod_area || "",
+        poster: item.poster || item.cover || item.vod_pic || "",
+        content: item.content || item.vod_content || "",
+        playFrom: item.playFrom || item.vod_play_from || "",
+        playUrl: item.playUrl || item.url || item.vod_play_url || "",
+        sourceName: state.source?.name || ""
+      }));
+    }
+
+    function applyConfig(config) {
+      const safeConfig = {
+        ...hardcodedConfig,
+        ...(config || {}),
+        advertisement: { ...hardcodedConfig.advertisement, ...(config?.advertisement || {}) }
+      };
+      state.config = safeConfig;
+      state.remoteConfigUrl = safeConfig.remoteConfigUrl || state.remoteConfigUrl;
+      state.corsProxyUrls = safeConfig.corsProxyUrls || state.corsProxyUrls || [];
+      setNotice(safeConfig);
+      const sources = getEnabledSources(safeConfig);
+      state.source = sources[0] || null;
+      els.sourceInfo.textContent = state.source ? `当前源: ${state.source.name}` : "使用本地示例数据";
+    }
+
+    async function loadConfigBundle({ preferRemote = true } = {}) {
+      const localConfig = state.localConfig || await tryLoadLocalConfig();
+      state.localConfig = localConfig;
+      state.remoteConfigUrl = localConfig.remoteConfigUrl || state.remoteConfigUrl;
+      state.corsProxyUrls = localConfig.corsProxyUrls || state.corsProxyUrls || [];
+      if (!preferRemote || !state.remoteConfigUrl) {
+        return { config: { ...hardcodedConfig, ...localConfig }, fromRemote: false };
+      }
+
+      try {
+        const remoteConfig = await loadJson(`${state.remoteConfigUrl}${state.remoteConfigUrl.includes("?") ? "&" : "?"}_=${Date.now()}`, { allowProxy: true });
+        return { config: { ...hardcodedConfig, ...localConfig, ...remoteConfig }, fromRemote: true };
+      } catch (error) {
+        console.warn(error);
+        return { config: { ...hardcodedConfig, ...localConfig }, fromRemote: false };
+      }
+    }
+
+    async function boot({ preferRemote = true, manual = false } = {}) {
+      if (state.isRefreshing) return;
+      state.isRefreshing = true;
+      els.refreshConfig.classList.add("loading");
+      setStatus(manual ? "正在刷新远程配置..." : "正在加载配置...");
+      try {
+        const { config, fromRemote } = await loadConfigBundle({ preferRemote });
+        applyConfig(config);
+        state.videos = hardcodedVideos;
+        state.query = els.search.value;
+        await loadLatestVideos();
+        els.sourceInfo.textContent = fromRemote
+          ? `远程配置已更新: ${state.source?.name || "无采集源"}`
+          : manual
+            ? "远程配置不可用，已使用本地配置"
+            : els.sourceInfo.textContent;
+        setStatus(fromRemote ? "远程配置已生效" : "已使用本地默认配置");
+      } catch (error) {
+        console.warn(error);
+        applyConfig(hardcodedConfig);
+        state.videos = hardcodedVideos;
+        els.sourceInfo.textContent = "配置读取失败，已显示示例数据";
+        setStatus("配置或接口请求失败，已切换到内置示例数据", true);
+      } finally {
+        state.isRefreshing = false;
+        els.refreshConfig.classList.remove("loading");
+        if (!state.videos.length) state.videos = hardcodedVideos;
+        try {
+          render();
+        } catch (error) {
+          console.error(`HOMEPAGE ERROR: ${error}\n${error.stack || ""}`);
+          forceHardcodedVideos(error);
+        }
+      }
+    }
+
+    async function fetchVideos(params = {}) {
+      if (!state.source) return [];
+      const payload = await loadJson(buildAppleCmsUrl(state.source, params), { allowProxy: true });
+      const videos = normalizeVideos(payload).filter((item) => item.title);
+      if (!videos.length) return hardcodedVideos;
+      if (!params.wd || !(state.source.type === "json" || state.source.baseUrl.endsWith(".json"))) return videos;
+      const keyword = params.wd.trim().toLowerCase();
+      const filtered = videos.filter((video) => `${video.title}${video.category}${video.area}${video.year}`.toLowerCase().includes(keyword));
+      return filtered.length ? filtered : hardcodedVideos;
+    }
+
+    async function loadLatestVideos() {
+      if (!state.source) return;
+      try {
+        els.sourceInfo.textContent = `正在加载: ${state.source.name}`;
+        const videos = await fetchVideos({ pg: 1 });
+        state.videos = videos.length ? videos : hardcodedVideos;
+        els.sourceInfo.textContent = `当前源: ${state.source.name}`;
+      } catch (error) {
+        console.warn(error);
+        state.videos = hardcodedVideos;
+        els.sourceInfo.textContent = "采集接口不可用，已显示示例数据";
+        setStatus("采集接口请求失败，已使用内置可播放示例", true);
+      }
+    }
+
+    async function searchRemoteVideos(keyword) {
+      if (!state.source || !keyword.trim()) {
+        await loadLatestVideos();
+        render();
+        return;
+      }
+      try {
+        els.sourceInfo.textContent = `搜索中: ${keyword}`;
+        const videos = await fetchVideos({ wd: keyword.trim(), pg: 1 });
+        state.videos = videos.length ? videos : hardcodedVideos;
+        els.sourceInfo.textContent = videos.length ? `搜索结果: ${keyword}` : `未找到: ${keyword}`;
+        state.activeCategory = "全部";
+        render();
+      } catch (error) {
+        console.warn(error);
+        state.videos = hardcodedVideos;
+        els.sourceInfo.textContent = "搜索接口不可用";
+        setStatus("搜索请求失败，请检查网络或接口跨域设置", true);
+        renderVideos();
+      }
+    }
+
+    function getCategories() {
+      const configured = state.config?.categories || [];
+      const fromVideos = [...new Set(state.videos.map((video) => video.category).filter(Boolean))];
+      return ["全部", ...new Set([...configured, ...fromVideos])];
+    }
+
+    function renderTabs() {
+      els.tabs.innerHTML = "";
+      getCategories().forEach((category) => {
+        const button = document.createElement("button");
+        button.className = `tab${category === state.activeCategory ? " active" : ""}`;
+        button.type = "button";
+        button.textContent = category;
+        button.addEventListener("click", () => {
+          state.activeCategory = category;
+          render();
+        });
+        els.tabs.appendChild(button);
+      });
+    }
+
+    function filteredVideos() {
+      const query = state.query.trim().toLowerCase();
+      return state.videos.filter((video) => {
+        const inCategory = state.activeCategory === "全部" || video.category === state.activeCategory;
+        const inSearch = !query || `${video.title}${video.category}${video.area}${video.year}`.toLowerCase().includes(query);
+        return inCategory && inSearch;
+      });
+    }
+
+    function posterFallback(title) {
+      return `<div class="poster" role="img" aria-label="${escapeHtml(title)}"></div>`;
+    }
+
+    function parsePlayGroups(video) {
+      const groups = String(video?.playUrl || "")
+        .split("$$$")
+        .map((group, groupIndex) => {
+          const sourceName = String(video?.playFrom || "").split("$$$")[groupIndex] || `线路 ${groupIndex + 1}`;
+          const episodes = group.split("#").map((entry, index) => {
+            const [rawName, ...urlParts] = entry.split("$");
+            const url = urlParts.join("$").trim();
+            return {
+              name: rawName?.trim() || `第 ${index + 1} 集`,
+              url
+            };
+          }).filter((episode) => episode.url);
+          return { sourceName, episodes };
+        })
+        .filter((group) => group.episodes.length);
+      return groups.length ? groups : parsePlayGroups(hardcodedVideos[0]);
+    }
+
+    function playEpisode(video, episode, button) {
+      try {
+        const safeVideo = video || hardcodedVideos[0];
+        const safeEpisode = episode || { name: "正片", url: hardcodedVideos[0].playUrl.split("$").slice(1).join("$") };
+        state.currentVideo = safeVideo;
+        state.currentEpisode = safeEpisode;
+        state.playerLoading = true;
+        state.playerError = null;
+        els.playerTitle.textContent = `${safeVideo.title || "正在播放"} · ${safeEpisode.name || "正片"}`;
+        els.episodes.querySelectorAll(".episode").forEach((item) => item.classList.remove("active"));
+        button?.classList.add("active");
+        if (state.player?.destroy) state.player.destroy(false);
+        els.playerBox.innerHTML = "";
+        showPlayerLoading();
+
+        if (window.Artplayer) {
+          state.player = new Artplayer({
+            container: els.playerBox,
+            url: safeEpisode.url,
+            autoplay: true,
+            setting: true,
+            hotkey: true,
+            pip: true,
+            fullscreen: true,
+            type: safeEpisode.url.includes(".m3u8") ? "m3u8" : "",
+            customType: {
+              m3u8(videoElement, url) {
+                try {
+                  if (window.Hls?.isSupported()) {
+                    const hls = new Hls();
+                    hls.loadSource(url);
+                    hls.attachMedia(videoElement);
+                  } else {
+                    videoElement.src = url;
+                  }
+                } catch (error) {
+                  console.error(`HOMEPAGE ERROR: ${error}\n${error.stack || ""}`);
+                  videoElement.src = hardcodedVideos[0].playUrl.split("$").slice(1).join("$");
+                }
+              }
+            }
+          });
+          state.playerLoading = false;
+          return;
+        }
+
+        const videoElement = document.createElement("video");
+        videoElement.controls = true;
+        videoElement.autoplay = true;
+        videoElement.playsInline = true;
+        videoElement.src = safeEpisode.url;
+        videoElement.onerror = () => {
+          showPlayerError("视频加载失败，已回退到硬编码视频", () => openPlayer(safeVideo));
+        };
+        els.playerBox.innerHTML = "";
+        els.playerBox.appendChild(videoElement);
+        state.playerLoading = false;
+      } catch (error) {
+        console.error(`HOMEPAGE ERROR: ${error}\n${error.stack || ""}`);
+        showPlayerError("播放器初始化失败，已回退到硬编码视频", () => openPlayer(video || hardcodedVideos[0]));
+        state.videos = hardcodedVideos;
+      }
+    }
+
+    function openMinimalPlayer(video) {
+      try {
+        const safeVideo = video || hardcodedVideos[0];
+        const fallbackUrl = resolvePlayableUrl(safeVideo) || fallbackPlaybackUrl;
+        els.modal.classList.add("open");
+        els.modal.setAttribute("aria-hidden", "false");
+        els.episodes.innerHTML = "";
+        els.playerTitle.textContent = `${safeVideo.title || "正在播放"} · 直连播放`;
+        showPlayerLoading("正在打开极简播放页...");
+        if (state.player?.destroy) state.player.destroy(false);
+        state.player = null;
+        els.playerBox.innerHTML = `
+          <video controls autoplay playsinline style="width:100%;height:100%;background:#000" src="${escapeHtml(fallbackUrl)}"></video>
+        `;
+        const videoElement = els.playerBox.querySelector("video");
+        if (videoElement) {
+          videoElement.onerror = () => {
+            videoElement.src = fallbackPlaybackUrl;
+          };
+        }
+        state.playerLoading = false;
+      } catch (error) {
+        console.error(`HOMEPAGE ERROR: ${error}\n${error.stack || ""}`);
+        showPlayerError("极简播放页打开失败，已使用备用视频", () => openMinimalPlayer(hardcodedVideos[0]));
+      }
+    }
+
+    function openPlayer(video) {
+      try {
+        openMinimalPlayer(video || hardcodedVideos[0]);
+      } catch (error) {
+        console.error(`HOMEPAGE ERROR: ${error}\n${error.stack || ""}`);
+        showPlayerError("播放窗口打开失败，已回退到硬编码视频", () => openMinimalPlayer(hardcodedVideos[0]));
+        state.videos = hardcodedVideos;
+      }
+    }
+
+    function closePlayer() {
+      els.modal.classList.remove("open");
+      els.modal.setAttribute("aria-hidden", "true");
+      if (state.player?.destroy) state.player.destroy(false);
+      state.player = null;
+      state.currentVideo = null;
+      state.currentEpisode = null;
+      state.playerLoading = false;
+      state.playerError = null;
+      els.playerBox.innerHTML = "";
+      els.episodes.innerHTML = "";
+    }
+
+    function renderVideos() {
+      const videos = filteredVideos();
+      els.sectionTitle.textContent = state.activeCategory === "全部" ? "热门推荐" : state.activeCategory;
+      els.grid.innerHTML = videos.length ? "" : `<div class="empty">没有找到匹配的星云影视资源</div>`;
+      videos.forEach((video) => {
+        const card = document.createElement("article");
+        card.className = "card";
+        card.tabIndex = 0;
+        const poster = video.poster
+          ? `<div class="poster"><img src="${escapeHtml(video.poster)}" alt="${escapeHtml(video.title)}" loading="lazy" onerror="this.remove()"><span class="badge">${escapeHtml(video.tag)}</span></div>`
+          : `${posterFallback(video.title)}<span class="badge">${escapeHtml(video.tag)}</span>`;
+        card.innerHTML = `
+          <div style="position:relative">${poster}</div>
+          <div class="card-body">
+            <h2 class="title">${escapeHtml(video.title)}</h2>
+            <p class="meta">${escapeHtml([video.category, video.year, video.area].filter(Boolean).join(" · ") || "资源信息待补充")}</p>
+          </div>
+        `;
+        card.addEventListener("click", () => {
+          try {
+            openPlayer(video);
+          } catch (error) {
+            console.error(`HOMEPAGE ERROR: ${error}\n${error.stack || ""}`);
+            openMinimalPlayer(hardcodedVideos[0]);
+          }
+        });
+        card.addEventListener("keydown", (event) => {
+          if (event.key === "Enter") openPlayer(video);
+        });
+        els.grid.appendChild(card);
+      });
+    }
+
+    function render() {
+      try {
+        renderTabs();
+        renderVideos();
+      } catch (error) {
+        console.error(`HOMEPAGE ERROR: ${error}\n${error.stack || ""}`);
+        forceHardcodedVideos(error);
+      }
+    }
+
+    els.search.addEventListener("input", async (event) => {
+      state.query = event.target.value;
+      clearTimeout(state.searchTimer);
+      state.searchTimer = setTimeout(() => {
+        if (state.source) searchRemoteVideos(state.query);
+        else renderVideos();
+      }, 450);
+    });
+
+    els.closePlayer.addEventListener("click", closePlayer);
+    els.refreshConfig.addEventListener("click", () => boot({ preferRemote: true, manual: true }));
+    els.modal.addEventListener("click", (event) => {
+      if (event.target === els.modal) closePlayer();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && els.modal.classList.contains("open")) closePlayer();
+    });
+    window.addEventListener("touchstart", (event) => {
+      if (window.scrollY === 0) state.touchStartY = event.touches[0].clientY;
+    }, { passive: true });
+    window.addEventListener("touchend", (event) => {
+      const endY = event.changedTouches[0].clientY;
+      if (window.scrollY === 0 && endY - state.touchStartY > 70) {
+        boot({ preferRemote: true, manual: true });
+      }
+      state.touchStartY = 0;
+    }, { passive: true });
+
+    window.addEventListener("error", (event) => {
+      console.error(`HOMEPAGE ERROR: ${event.error || event.message}\n${event.error?.stack || ""}`);
+      forceHardcodedVideos(event.error || event.message);
+    });
+    window.addEventListener("unhandledrejection", (event) => {
+      console.error(`HOMEPAGE ERROR: ${event.reason}\n${event.reason?.stack || ""}`);
+      forceHardcodedVideos(event.reason);
+    });
+    window.addEventListener("pageshow", () => {
+      try {
+        if (!els.grid.children.length) render();
+      } catch (error) {
+        console.error(`HOMEPAGE ERROR: ${error}\n${error.stack || ""}`);
+      }
+    });
+
+    try {
+      showPlayerLoading("正在准备页面...");
+      state.videos = hardcodedVideos;
+      boot({ preferRemote: true });
+    } catch (error) {
+      console.error(`HOMEPAGE ERROR: ${error}\n${error.stack || ""}`);
+      forceHardcodedVideos(error);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+{
+  "advertisement": {
+    "title": "可替换广告位",
+    "description": "这里可以放流量卡、活动推广或合作入口，修改 config.json 即可更新。",
+    "link": "https://example.com"
+  },
+  "remoteConfigUrl": "https://raw.githubusercontent.com/942042942/media-app/main/remote-config.json",
+  "corsProxyUrls": [
+    "https://api.allorigins.win/raw?url={url}"
+  ],
+  "apiSources": [
+    {
+      "name": "公开视频演示源",
+      "baseUrl": "https://raw.githubusercontent.com/942042942/media-app/main/mock/apple-cms-public-domain.json",
+      "enabled": true
+    },
+    {
+      "name": "HLS 播放测试源",
+      "baseUrl": "https://raw.githubusercontent.com/942042942/media-app/main/mock/apple-cms-hls-demo.json",
+      "enabled": true
+    }
+  ],
+  "videoApiUrl": "",
+  "announcement": "当前已启用公开视频演示采集源，可测试列表、搜索和播放。上线前请替换为你有授权的苹果 CMS JSON 接口。",
+  "categories": ["电影", "剧集", "综艺", "动漫", "纪录片"]
+}
